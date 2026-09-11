@@ -3,26 +3,35 @@ const fs = require("fs");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-const REPLICATE_API_TOKEN = process.env.REPLICATE_API_TOKEN;
+const TOKEN = process.env.REPLICATE_API_TOKEN;
 
 const server = http.createServer(async (req, res) => {
 
-  // HOME PAGE
-  if (req.method === "GET" && req.url === "/") {
-    const filePath = path.join(__dirname, "index.html");
+  const url = new URL(
+    req.url,
+    `http://${req.headers.host || "localhost"}`
+  );
+
+  // HOME
+  if (req.method === "GET" && url.pathname === "/") {
+
+    const filePath = path.join(process.cwd(), "index.html");
 
     fs.readFile(filePath, (err, data) => {
+
       if (err) {
         console.error("INDEX ERROR:", err);
+
         res.writeHead(500, {
           "Content-Type": "text/plain"
         });
+
         res.end("KLYRO AI - Unable to load website");
         return;
       }
 
       res.writeHead(200, {
-        "Content-Type": "text/html"
+        "Content-Type": "text/html; charset=utf-8"
       });
 
       res.end(data);
@@ -31,13 +40,11 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+
   // GENERATE VIDEO
-  if (req.method === "POST" && req.url === "/generate") {
+  if (req.method === "POST" && url.pathname === "/generate") {
 
-    console.log("GENERATE REQUEST RECEIVED");
-
-    if (!REPLICATE_API_TOKEN) {
-      console.error("ERROR: REPLICATE_API_TOKEN is missing");
+    if (!TOKEN) {
 
       res.writeHead(500, {
         "Content-Type": "application/json"
@@ -63,9 +70,8 @@ const server = http.createServer(async (req, res) => {
         const data = JSON.parse(body);
         const prompt = data.prompt;
 
-        console.log("PROMPT:", prompt);
-
         if (!prompt) {
+
           res.writeHead(400, {
             "Content-Type": "application/json"
           });
@@ -77,15 +83,13 @@ const server = http.createServer(async (req, res) => {
           return;
         }
 
-        console.log("Sending request to Replicate...");
-
         const response = await fetch(
           "https://api.replicate.com/v1/models/wan-video/wan-2.1-1.3b/predictions",
           {
             method: "POST",
 
             headers: {
-              "Authorization": `Bearer ${REPLICATE_API_TOKEN}`,
+              "Authorization": `Bearer ${TOKEN}`,
               "Content-Type": "application/json"
             },
 
@@ -101,8 +105,7 @@ const server = http.createServer(async (req, res) => {
 
         const result = await response.json();
 
-        console.log("REPLICATE STATUS:", response.status);
-        console.log("REPLICATE RESPONSE:", JSON.stringify(result));
+        console.log("REPLICATE:", response.status, result);
 
         if (!response.ok) {
 
@@ -114,8 +117,7 @@ const server = http.createServer(async (req, res) => {
             error:
               result.detail ||
               result.error ||
-              "Replicate request failed",
-            replicate: result
+              "Replicate request failed"
           }));
 
           return;
@@ -147,55 +149,37 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // CHECK VIDEO STATUS
-  if (req.method === "GET" && req.url.startsWith("/status")) {
+
+  // CHECK STATUS
+  if (req.method === "GET" && url.pathname === "/status") {
+
+    const id = url.searchParams.get("id");
+
+    if (!id) {
+
+      res.writeHead(400, {
+        "Content-Type": "application/json"
+      });
+
+      res.end(JSON.stringify({
+        error: "Prediction ID is required"
+      }));
+
+      return;
+    }
 
     try {
-
-      const url = new URL(
-        req.url,
-        `http://${req.headers.host}`
-      );
-
-      const id = url.searchParams.get("id");
-
-      if (!id) {
-
-        res.writeHead(400, {
-          "Content-Type": "application/json"
-        });
-
-        res.end(JSON.stringify({
-          error: "Prediction ID is required"
-        }));
-
-        return;
-      }
-
-      console.log("CHECKING PREDICTION:", id);
 
       const response = await fetch(
         `https://api.replicate.com/v1/predictions/${id}`,
         {
           headers: {
-            "Authorization": `Bearer ${REPLICATE_API_TOKEN}`
+            "Authorization": `Bearer ${TOKEN}`
           }
         }
       );
 
       const result = await response.json();
-
-      console.log(
-        "PREDICTION STATUS:",
-        result.status
-      );
-
-      if (result.error) {
-        console.error(
-          "PREDICTION ERROR:",
-          result.error
-        );
-      }
 
       res.writeHead(response.status, {
         "Content-Type": "application/json"
@@ -223,6 +207,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+
   // 404
   res.writeHead(404, {
     "Content-Type": "application/json"
@@ -232,6 +217,7 @@ const server = http.createServer(async (req, res) => {
     error: "Not found"
   }));
 });
+
 
 server.listen(PORT, () => {
   console.log(`KLYRO AI running on port ${PORT}`);
