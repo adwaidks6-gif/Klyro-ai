@@ -6,9 +6,7 @@
 <title>KLYRO AI</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
@@ -19,6 +17,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
+  padding:25px;
 }
 
 .container{
@@ -31,17 +30,13 @@ body{
   font-size:48px;
   font-weight:800;
   letter-spacing:3px;
-  margin-bottom:10px;
 }
 
-.logo span{
-  color:#8b2cff;
-}
+.logo span{color:#8b2cff}
 
 .subtitle{
   color:#aaa;
-  font-size:17px;
-  margin-bottom:35px;
+  margin:10px 0 35px;
 }
 
 .box{
@@ -49,21 +44,19 @@ body{
   border:1px solid #292936;
   border-radius:20px;
   padding:25px;
-  box-shadow:0 0 40px rgba(120,0,255,.15);
 }
 
 textarea{
   width:100%;
   height:150px;
-  resize:none;
-  border:none;
-  outline:none;
-  border-radius:14px;
   padding:18px;
+  border-radius:14px;
   background:#07070c;
   color:white;
-  font-size:16px;
   border:1px solid #292936;
+  font-size:16px;
+  outline:none;
+  resize:none;
 }
 
 button{
@@ -72,21 +65,29 @@ button{
   padding:16px;
   border:0;
   border-radius:14px;
-  background:linear-gradient(90deg,#6d20ff,#a12cff);
+  background:#7c3aed;
   color:white;
   font-size:17px;
   font-weight:bold;
-  cursor:pointer;
 }
 
-button:active{
-  transform:scale(.98);
+button:disabled{
+  opacity:.5;
 }
 
-.status{
+#status{
   margin-top:20px;
   color:#aaa;
-  font-size:14px;
+  min-height:22px;
+}
+
+#videoContainer{
+  margin-top:20px;
+}
+
+#videoContainer video{
+  width:100%;
+  border-radius:14px;
 }
 
 .footer{
@@ -101,51 +102,152 @@ button:active{
 
 <div class="container">
 
-  <div class="logo">KLYRO <span>AI</span></div>
+<div class="logo">
+KLYRO <span>AI</span>
+</div>
 
-  <div class="subtitle">
-    AI-powered video generation platform
-  </div>
+<div class="subtitle">
+AI-powered video generation platform
+</div>
 
-  <div class="box">
+<div class="box">
 
-    <textarea id="prompt"
-      placeholder="Describe your video..."></textarea>
+<textarea id="prompt"
+placeholder="Describe your video..."></textarea>
 
-    <button onclick="generateVideo()">
-      ✨ Generate Video
-    </button>
+<button id="generateBtn"
+onclick="generateVideo()">
+✨ Generate Video
+</button>
 
-    <div class="status" id="status">
-      Ready to create.
-    </div>
+<div id="status">
+Ready to create.
+</div>
 
-  </div>
+<div id="videoContainer"></div>
 
-  <div class="footer">
-    © 2026 KLYRO AI • Create. Imagine. Generate.
-  </div>
+</div>
+
+<div class="footer">
+© 2026 KLYRO AI • Create. Imagine. Generate.
+</div>
 
 </div>
 
 <script>
-function generateVideo(){
 
-  const prompt = document.getElementById("prompt").value.trim();
-  const status = document.getElementById("status");
+async function generateVideo(){
 
-  if(!prompt){
-    status.innerText = "⚠️ Please describe your video first.";
-    return;
-  }
+const prompt =
+document.getElementById("prompt").value.trim();
 
-  status.innerText = "🚀 KLYRO AI is preparing your video...";
+const status =
+document.getElementById("status");
 
-  setTimeout(()=>{
-    status.innerText =
-      "✨ Video request received. Generation engine coming soon.";
-  },1500);
+const button =
+document.getElementById("generateBtn");
+
+const videoContainer =
+document.getElementById("videoContainer");
+
+if(!prompt){
+status.innerText =
+"⚠️ Please describe your video first.";
+return;
 }
+
+button.disabled=true;
+videoContainer.innerHTML="";
+
+status.innerText =
+"🚀 KLYRO AI is starting video generation...";
+
+try{
+
+const response=await fetch("/generate",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+prompt:prompt
+})
+});
+
+const data=await response.json();
+
+if(!response.ok){
+throw new Error(
+data.error || "Generation failed"
+);
+}
+
+status.innerText =
+"🎬 Video is generating... Please wait.";
+
+while(true){
+
+await new Promise(resolve =>
+setTimeout(resolve,4000)
+);
+
+const result=await fetch(
+"/status?id="+data.id
+);
+
+const resultData=await result.json();
+
+if(resultData.status==="succeeded"){
+
+let videoUrl=resultData.output;
+
+if(Array.isArray(videoUrl)){
+videoUrl=videoUrl[0];
+}
+
+status.innerText =
+"✅ Video generated successfully!";
+
+videoContainer.innerHTML=`
+<video controls playsinline>
+<source src="${videoUrl}" type="video/mp4">
+Your browser does not support video.
+</video>
+`;
+
+break;
+}
+
+if(
+resultData.status==="failed" ||
+resultData.status==="canceled"
+){
+
+throw new Error(
+resultData.error ||
+"Video generation failed"
+);
+
+}
+
+status.innerText =
+"🎬 KLYRO AI is generating your video...";
+
+}
+
+}catch(error){
+
+status.innerText =
+"❌ "+error.message;
+
+}finally{
+
+button.disabled=false;
+
+}
+
+}
+
 </script>
 
 </body>
