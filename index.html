@@ -1,14 +1,152 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>KLYRO AI</title>
-</head>
-<body>
-  <h1>🚀 KLYRO AI</h1>
-  <p>AI-powered video generation platform</p>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KLYRO AI</title>
 
-  <textarea placeholder="Describe your video..."></textarea>
-  <br><br>
-  <button>Generate Video</button>
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:#050509;
+  color:white;
+  font-family:Arial,sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container{
+  width:92%;
+  max-width:700px;
+  text-align:center;
+}
+
+.logo{
+  font-size:48px;
+  font-weight:800;
+  letter-spacing:3px;
+  margin-bottom:10px;
+}
+
+.logo span{
+  color:#8b2cff;
+}
+
+.subtitle{
+  color:#aaa;
+  font-size:17px;
+  margin-bottom:35px;
+}
+
+.box{
+  background:#101016;
+  border:1px solid #292936;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 0 40px rgba(120,0,255,.15);
+}
+
+textarea{
+  width:100%;
+  height:150px;
+  resize:none;
+  border:none;
+  outline:none;
+  border-radius:14px;
+  padding:18px;
+  background:#07070c;
+  color:white;
+  font-size:16px;
+  border:1px solid #292936;
+}
+
+button{
+  width:100%;
+  margin-top:18px;
+  padding:16px;
+  border:0;
+  border-radius:14px;
+  background:linear-gradient(90deg,#6d20ff,#a12cff);
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+.status{
+  margin-top:20px;
+  color:#aaa;
+  font-size:14px;
+}
+
+.footer{
+  margin-top:30px;
+  color:#555;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">KLYRO <span>AI</span></div>
+
+  <div class="subtitle">
+    AI-powered video generation platform
+  </div>
+
+  <div class="box">
+
+    <textarea id="prompt"
+      placeholder="Describe your video..."></textarea>
+
+    <button onclick="generateVideo()">
+      ✨ Generate Video
+    </button>
+
+    <div class="status" id="status">
+      Ready to create.
+    </div>
+
+  </div>
+
+  <div class="footer">
+    © 2026 KLYRO AI • Create. Imagine. Generate.
+  </div>
+
+</div>
+
+<script>
+function generateVideo(){
+
+  const prompt = document.getElementById("prompt").value.trim();
+  const status = document.getElementById("status");
+
+  if(!prompt){
+    status.innerText = "⚠️ Please describe your video first.";
+    return;
+  }
+
+  status.innerText = "🚀 KLYRO AI is preparing your video...";
+
+  setTimeout(()=>{
+    status.innerText =
+      "✨ Video request received. Generation engine coming soon.";
+  },1500);
+}
+</script>
+
 </body>
 </html>
