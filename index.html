@@ -2,253 +2,363 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KLYRO AI</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KLYRO AI Dashboard</title>
 
 <style>
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  min-height:100vh;
-  background:#050509;
-  color:white;
-  font-family:Arial,sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:25px;
+margin:0;
+background:#07070b;
+color:white;
+font-family:Arial,sans-serif;
 }
 
-.container{
-  width:92%;
-  max-width:700px;
-  text-align:center;
+.app{
+display:flex;
+min-height:100vh;
+}
+
+.sidebar{
+width:230px;
+background:#0d0d13;
+border-right:1px solid #24242d;
+padding:25px 15px;
 }
 
 .logo{
-  font-size:48px;
-  font-weight:800;
-  letter-spacing:3px;
+font-size:25px;
+font-weight:bold;
+padding:10px;
+margin-bottom:35px;
 }
 
-.logo span{color:#8b2cff}
+.logo span{color:#8b35ff}
 
-.subtitle{
-  color:#aaa;
-  margin:10px 0 35px;
+.nav button{
+width:100%;
+padding:14px;
+margin:5px 0;
+border:0;
+border-radius:10px;
+background:transparent;
+color:#aaa;
+text-align:left;
+font-size:15px;
+cursor:pointer;
 }
 
-.box{
-  background:#101016;
-  border:1px solid #292936;
-  border-radius:20px;
-  padding:25px;
+.nav button:hover,
+.nav button.active{
+background:#20202b;
+color:white;
+}
+
+.main{
+flex:1;
+padding:25px;
+max-width:1200px;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
+}
+
+.user{
+background:#171720;
+padding:10px 15px;
+border-radius:20px;
+color:#bbb;
+}
+
+h1{margin:0 0 8px}
+.sub{color:#888}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:#111118;
+border:1px solid #252530;
+border-radius:16px;
+padding:20px;
+}
+
+.card .number{
+font-size:30px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.label{color:#888}
+
+.panel{
+background:#111118;
+border:1px solid #252530;
+border-radius:18px;
+padding:25px;
+margin-bottom:20px;
 }
 
 textarea{
-  width:100%;
-  height:150px;
-  padding:18px;
-  border-radius:14px;
-  background:#07070c;
-  color:white;
-  border:1px solid #292936;
-  font-size:16px;
-  outline:none;
-  resize:none;
+width:100%;
+height:150px;
+background:#08080d;
+border:1px solid #30303b;
+border-radius:12px;
+padding:18px;
+color:white;
+font-size:16px;
+resize:vertical;
+outline:none;
 }
 
-button{
-  width:100%;
-  margin-top:18px;
-  padding:16px;
-  border:0;
-  border-radius:14px;
-  background:#7c3aed;
-  color:white;
-  font-size:17px;
-  font-weight:bold;
+textarea:focus{
+border-color:#8b35ff;
 }
 
-button:disabled{
-  opacity:.5;
+.options{
+display:flex;
+gap:10px;
+margin:15px 0;
+flex-wrap:wrap;
 }
 
-#status{
-  margin-top:20px;
-  color:#aaa;
-  min-height:22px;
+select{
+background:#181820;
+color:white;
+border:1px solid #30303b;
+padding:12px;
+border-radius:9px;
 }
 
-#videoContainer{
-  margin-top:20px;
+.generate{
+width:100%;
+padding:16px;
+border:0;
+border-radius:12px;
+background:#7c32ee;
+color:white;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
 }
 
-#videoContainer video{
-  width:100%;
-  border-radius:14px;
+.generate:hover{background:#913fff}
+
+.status{
+margin-top:15px;
+text-align:center;
+color:#aaa;
 }
 
-.footer{
-  margin-top:30px;
-  color:#555;
-  font-size:13px;
+.video{
+margin-top:20px;
+text-align:center;
+}
+
+video{
+width:100%;
+max-width:700px;
+border-radius:15px;
+}
+
+.projects{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+}
+
+.project{
+background:#181820;
+padding:20px;
+border-radius:12px;
+color:#aaa;
+}
+
+.price{
+font-size:25px;
+font-weight:bold;
+margin:10px 0;
+}
+
+.plan button{
+padding:12px 18px;
+border:0;
+border-radius:8px;
+background:#7c32ee;
+color:white;
+font-weight:bold;
+}
+
+.hidden{display:none}
+
+@media(max-width:700px){
+.sidebar{
+width:75px;
+padding:15px 8px;
+}
+
+.logo{
+font-size:18px;
+padding:5px;
+}
+
+.logo span{display:none}
+
+.nav button{
+font-size:0;
+text-align:center;
+}
+
+.nav button::first-letter{
+font-size:20px;
+}
+
+.main{
+padding:15px;
+}
+
+.cards{
+grid-template-columns:1fr;
+}
+
+.projects{
+grid-template-columns:1fr;
+}
+
+.top{
+gap:10px;
+}
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="app">
 
-<div class="logo">
-KLYRO <span>AI</span>
+<aside class="sidebar">
+
+<div class="logo">KLYRO <span>AI</span></div>
+
+<div class="nav">
+<button class="active" onclick="showPage('dashboard',this)">🏠 Dashboard</button>
+<button onclick="showPage('create',this)">🎬 Create Video</button>
+<button onclick="showPage('projects',this)">📁 My Projects</button>
+<button onclick="showPage('credits',this)">🪙 Credits</button>
+<button onclick="showPage('billing',this)">💳 Billing</button>
+<button onclick="showPage('settings',this)">⚙️ Settings</button>
 </div>
 
-<div class="subtitle">
-AI-powered video generation platform
+</aside>
+
+<main class="main">
+
+<div class="top">
+<div>
+<h1 id="title">Welcome to KLYRO AI 👋</h1>
+<div class="sub">Create cinematic AI videos from your ideas.</div>
 </div>
 
-<div class="box">
+<div class="user">👤 User</div>
+</div>
+
+
+<!-- DASHBOARD -->
+
+<section id="dashboard">
+
+<div class="cards">
+
+<div class="card">
+<div class="label">🪙 Credits</div>
+<div class="number" id="creditCount">10</div>
+</div>
+
+<div class="card">
+<div class="label">🎬 Videos Created</div>
+<div class="number" id="videoCount">0</div>
+</div>
+
+<div class="card">
+<div class="label">📁 Projects</div>
+<div class="number">0</div>
+</div>
+
+</div>
+
+<div class="panel">
+<h2>🚀 Create your first video</h2>
+<p class="sub">Turn your prompt into an AI-generated video.</p>
+
+<button class="generate" onclick="openCreate()">
+✨ Create Video
+</button>
+</div>
+
+</section>
+
+
+<!-- CREATE -->
+
+<section id="create" class="hidden">
+
+<div class="panel">
+
+<h2>🎬 Create AI Video</h2>
+
+<p class="sub">
+Describe the video you want KLYRO AI to create.
+</p>
 
 <textarea id="prompt"
-placeholder="Describe your video..."></textarea>
+placeholder="Example: A cinematic drone shot of a beautiful Kerala village during sunset..."></textarea>
 
-<button id="generateBtn"
-onclick="generateVideo()">
+<div class="options">
+
+<select id="ratio">
+<option value="16:9">16:9 Landscape</option>
+<option value="9:16">9:16 Reel / Shorts</option>
+<option value="1:1">1:1 Square</option>
+</select>
+
+<select>
+<option>480p</option>
+</select>
+
+</div>
+
+<button class="generate" id="generateBtn" onclick="generateVideo()">
 ✨ Generate Video
 </button>
 
-<div id="status">
-Ready to create.
-</div>
+<div class="status" id="status"></div>
 
-<div id="videoContainer"></div>
+<div class="video" id="videoContainer"></div>
 
 </div>
 
-<div class="footer">
-© 2026 KLYRO AI • Create. Imagine. Generate.
-</div>
+</section>
 
-</div>
 
-<script>
+<!-- PROJECTS -->
 
-async function generateVideo(){
+<section id="projects" class="hidden">
 
-const prompt =
-document.getElementById("prompt").value.trim();
+<div class="panel">
 
-const status =
-document.getElementById("status");
+<h2>📁 My Projects</h2>
 
-const button =
-document.getElementById("generateBtn");
+<div class="projects">
 
-const videoContainer =
-document.getElementById("videoContainer");
-
-if(!prompt){
-status.innerText =
-"⚠️ Please describe your video first.";
-return;
-}
-
-button.disabled=true;
-videoContainer.innerHTML="";
-
-status.innerText =
-"🚀 KLYRO AI is starting video generation...";
-
-try{
-
-const response=await fetch("/generate",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-prompt:prompt
-})
-});
-
-const data=await response.json();
-
-if(!response.ok){
-throw new Error(
-data.error || "Generation failed"
-);
-}
-
-status.innerText =
-"🎬 Video is generating... Please wait.";
-
-while(true){
-
-await new Promise(resolve =>
-setTimeout(resolve,4000)
-);
-
-const result=await fetch(
-"/status?id="+data.id
-);
-
-const resultData=await result.json();
-
-if(resultData.status==="succeeded"){
-
-let videoUrl=resultData.output;
-
-if(Array.isArray(videoUrl)){
-videoUrl=videoUrl[0];
-}
-
-status.innerText =
-"✅ Video generated successfully!";
-
-videoContainer.innerHTML=`
-<video controls playsinline>
-<source src="${videoUrl}" type="video/mp4">
-Your browser does not support video.
-</video>
-`;
-
-break;
-}
-
-if(
-resultData.status==="failed" ||
-resultData.status==="canceled"
-){
-
-throw new Error(
-resultData.error ||
-"Video generation failed"
-);
-
-}
-
-status.innerText =
-"🎬 KLYRO AI is generating your video...";
-
-}
-
-}catch(error){
-
-status.innerText =
-"❌ "+error.message;
-
-}finally{
-
-button.disabled=false;
-
-}
-
-}
-
-</script>
-
-</body>
-</html>
+<div class="project">
+🎬<br><
