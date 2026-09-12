@@ -388,7 +388,133 @@ font-size:12px;
 </head>
 
 <body>
+<!-- KLYRO AI LOGIN -->
+<div id="loginScreen" style="
+position:fixed;
+inset:0;
+z-index:9999;
+background:#05070d;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+font-family:Arial,sans-serif;
+">
 
+  <div style="
+  width:100%;
+  max-width:400px;
+  background:#0d1320;
+  border:1px solid #1b2538;
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+  ">
+
+    <div style="
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:8px;
+    ">
+      KLYRO <span style="color:#8b5cf6;">AI</span>
+    </div>
+
+    <p style="
+    text-align:center;
+    color:#8993a7;
+    margin-bottom:28px;
+    ">
+      Create amazing videos with AI
+    </p>
+
+    <h2 style="margin-bottom:20px;">Welcome Back 👋</h2>
+
+    <input id="loginEmail" type="email"
+    placeholder="Email address"
+    style="
+    width:100%;
+    padding:15px;
+    margin-bottom:12px;
+    border-radius:12px;
+    border:1px solid #273249;
+    background:#080c15;
+    color:white;
+    box-sizing:border-box;
+    font-size:15px;
+    ">
+
+    <input id="loginPassword" type="password"
+    placeholder="Password"
+    style="
+    width:100%;
+    padding:15px;
+    margin-bottom:18px;
+    border-radius:12px;
+    border:1px solid #273249;
+    background:#080c15;
+    color:white;
+    box-sizing:border-box;
+    font-size:15px;
+    ">
+
+    <button onclick="klyroLogin()" style="
+    width:100%;
+    padding:15px;
+    border:0;
+    border-radius:12px;
+    background:linear-gradient(90deg,#7c3aed,#c026d3);
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    ">
+      🚀 Login to KLYRO AI
+    </button>
+
+    <p style="
+    text-align:center;
+    color:#8993a7;
+    margin-top:20px;
+    font-size:14px;
+    ">
+      New to KLYRO AI?
+      <span onclick="klyroSignup()" style="
+      color:#9b7cff;
+      cursor:pointer;
+      font-weight:bold;
+      ">
+      Create Account
+      </span>
+    </p>
+
+  </div>
+</div>
+
+<script>
+function klyroLogin(){
+
+  const email =
+  document.getElementById("loginEmail").value.trim();
+
+  const password =
+  document.getElementById("loginPassword").value.trim();
+
+  if(!email || !password){
+    alert("Please enter email and password.");
+    return;
+  }
+
+  localStorage.setItem("klyroLoggedIn","true");
+
+  document.getElementById("loginScreen").style.display="none";
+}
+
+function klyroSignup(){
+
+  alert("KLYRO AI Signup is coming soon 🚀");
+}
+</script>
 <div class="app">
 
 <!-- SIDEBAR -->
