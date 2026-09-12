@@ -5,7 +5,7 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const TOKEN = process.env.REPLICATE_API_TOKEN;
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
 
   const url = new URL(
     req.url,
@@ -40,11 +40,11 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-
   // GENERATE VIDEO
   if (req.method === "POST" && url.pathname === "/generate") {
 
     if (!TOKEN) {
+
       res.writeHead(500, {
         "Content-Type": "application/json"
       });
@@ -70,6 +70,7 @@ const server = http.createServer((req, res) => {
         const prompt = data.prompt;
 
         if (!prompt) {
+
           res.writeHead(400, {
             "Content-Type": "application/json"
           });
@@ -105,6 +106,7 @@ const server = http.createServer((req, res) => {
         console.log("REPLICATE RESPONSE:", result);
 
         if (!response.ok) {
+
           res.writeHead(response.status, {
             "Content-Type": "application/json"
           });
@@ -145,13 +147,13 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-
   // VIDEO STATUS
   if (req.method === "GET" && url.pathname === "/status") {
 
     const id = url.searchParams.get("id");
 
     if (!id) {
+
       res.writeHead(400, {
         "Content-Type": "application/json"
       });
@@ -204,8 +206,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-
-  // NOT FOUND
+  // 404
   res.writeHead(404, {
     "Content-Type": "application/json"
   });
@@ -215,7 +216,6 @@ const server = http.createServer((req, res) => {
   }));
 
 });
-
 
 server.listen(PORT, () => {
   console.log(`KLYRO AI running on port ${PORT}`);
