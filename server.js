@@ -12,7 +12,19 @@ const server = http.createServer(async (req, res) => {
     req.url,
     `http://${req.headers.host || "localhost"}`
   );
+// SUPABASE CONFIG
+if (req.method === "GET" && url.pathname === "/config") {
+  res.writeHead(200, {
+    "Content-Type": "application/json"
+  });
 
+  res.end(JSON.stringify({
+    supabaseUrl: SUPABASE_URL,
+    supabasePublishableKey: SUPABASE_PUBLISHABLE_KEY
+  }));
+
+  return;
+}
   // HOME PAGE
   if (req.method === "GET" && url.pathname === "/") {
 
