@@ -5,17 +5,17 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const TOKEN = process.env.REPLICATE_API_TOKEN;
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer((req, res) => {
 
   const url = new URL(
     req.url,
     `http://${req.headers.host || "localhost"}`
   );
 
-  // HOME
+  // HOME PAGE
   if (req.method === "GET" && url.pathname === "/") {
 
-    const filePath = path.join(process.cwd(), "index.html");
+    const filePath = path.join(__dirname, "index.html");
 
     fs.readFile(filePath, (err, data) => {
 
@@ -23,7 +23,7 @@ const server = http.createServer(async (req, res) => {
         console.error("INDEX ERROR:", err);
 
         res.writeHead(500, {
-          "Content-Type": "text/plain"
+          "Content-Type": "text/plain; charset=utf-8"
         });
 
         res.end("KLYRO AI - Unable to load website");
@@ -45,7 +45,6 @@ const server = http.createServer(async (req, res) => {
   if (req.method === "POST" && url.pathname === "/generate") {
 
     if (!TOKEN) {
-
       res.writeHead(500, {
         "Content-Type": "application/json"
       });
@@ -71,7 +70,6 @@ const server = http.createServer(async (req, res) => {
         const prompt = data.prompt;
 
         if (!prompt) {
-
           res.writeHead(400, {
             "Content-Type": "application/json"
           });
@@ -87,12 +85,10 @@ const server = http.createServer(async (req, res) => {
           "https://api.replicate.com/v1/models/wan-video/wan-2.1-1.3b/predictions",
           {
             method: "POST",
-
             headers: {
               "Authorization": `Bearer ${TOKEN}`,
               "Content-Type": "application/json"
             },
-
             body: JSON.stringify({
               input: {
                 prompt: prompt,
@@ -105,10 +101,10 @@ const server = http.createServer(async (req, res) => {
 
         const result = await response.json();
 
-        console.log("REPLICATE:", response.status, result);
+        console.log("REPLICATE STATUS:", response.status);
+        console.log("REPLICATE RESPONSE:", result);
 
         if (!response.ok) {
-
           res.writeHead(response.status, {
             "Content-Type": "application/json"
           });
@@ -150,13 +146,12 @@ const server = http.createServer(async (req, res) => {
   }
 
 
-  // CHECK STATUS
+  // VIDEO STATUS
   if (req.method === "GET" && url.pathname === "/status") {
 
     const id = url.searchParams.get("id");
 
     if (!id) {
-
       res.writeHead(400, {
         "Content-Type": "application/json"
       });
@@ -180,6 +175,8 @@ const server = http.createServer(async (req, res) => {
       );
 
       const result = await response.json();
+
+      console.log("PREDICTION STATUS:", result.status);
 
       res.writeHead(response.status, {
         "Content-Type": "application/json"
@@ -208,7 +205,7 @@ const server = http.createServer(async (req, res) => {
   }
 
 
-  // 404
+  // NOT FOUND
   res.writeHead(404, {
     "Content-Type": "application/json"
   });
@@ -216,6 +213,7 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({
     error: "Not found"
   }));
+
 });
 
 
