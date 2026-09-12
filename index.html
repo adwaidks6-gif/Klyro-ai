@@ -517,7 +517,7 @@ async function initSupabase(){
     });
 
   }catch(error){
-    console.error("Supabase error:", error);
+    alert("Supabase error: " + error.message);
   }
 }
 
