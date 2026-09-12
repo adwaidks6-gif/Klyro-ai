@@ -3,359 +3,674 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>KLYRO AI — Dashboard</title>
 
 <style>
-*{box-sizing:border-box}
 
-body{
- margin:0;
- background:#07070b;
- color:#fff;
- font-family:Inter,Arial,sans-serif;
+*{
+    box-sizing:border-box;
 }
 
-.app{display:flex;min-height:100vh}
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    margin:0;
+    background:#03050a;
+    color:white;
+    font-family:Inter,Arial,sans-serif;
+    overflow-x:hidden;
+}
+
+/* ================= BACKGROUND ================= */
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    background:
+        radial-gradient(circle at 70% 15%,rgba(0,150,255,.18),transparent 30%),
+        radial-gradient(circle at 85% 55%,rgba(255,100,0,.10),transparent 25%),
+        linear-gradient(180deg,#02040a,#070a12 60%,#020307);
+}
+
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+        linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);
+    background-size:50px 50px;
+    pointer-events:none;
+}
+
+/* ================= APP ================= */
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ================= SIDEBAR ================= */
 
 .sidebar{
- width:240px;
- background:#0d0d13;
- border-right:1px solid #252530;
- padding:22px 14px;
- position:fixed;
- top:0;bottom:0;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:245px;
+    padding:25px 16px;
+    background:rgba(3,6,12,.94);
+    border-right:1px solid #15243a;
+    z-index:20;
+    backdrop-filter:blur(20px);
 }
 
 .logo{
- font-size:25px;
- font-weight:800;
- padding:12px;
- margin-bottom:35px;
- letter-spacing:-1px;
+    padding:5px 12px 30px;
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:-1px;
+    font-style:italic;
 }
 
-.logo span{color:#8b35ff}
+.logo span{
+    color:#00bfff;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+}
 
 .nav button{
- width:100%;
- border:0;
- background:transparent;
- color:#92929d;
- padding:14px;
- margin:4px 0;
- border-radius:12px;
- text-align:left;
- font-size:15px;
- cursor:pointer;
+    border:1px solid transparent;
+    background:transparent;
+    color:#b7c0ce;
+    padding:16px 14px;
+    border-radius:14px;
+    text-align:left;
+    font-size:15px;
+    cursor:pointer;
+    transition:.25s;
 }
 
-.nav button:hover,
-.nav button.active{
- background:#1d1828;
- color:#fff;
+.nav button:hover{
+    background:#101827;
+    color:white;
+    border-color:#1b3b60;
+    transform:translateX(3px);
 }
+
+.nav button.active{
+    color:white;
+    background:linear-gradient(90deg,#087cff,#1747c8);
+    border-color:#19a9ff;
+    box-shadow:0 0 25px rgba(0,132,255,.35);
+}
+
+.nav-icon{
+    display:inline-block;
+    width:30px;
+    font-size:19px;
+}
+
+/* ================= MAIN ================= */
 
 .main{
- margin-left:240px;
- width:calc(100% - 240px);
- padding:30px;
- max-width:1400px;
+    margin-left:245px;
+    width:calc(100% - 245px);
+    padding:25px;
+    max-width:1700px;
 }
 
+/* ================= TOPBAR ================= */
+
 .topbar{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin-bottom:30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:28px;
 }
 
 .welcome h1{
- margin:0;
- font-size:30px;
+    margin:0;
+    font-size:31px;
 }
 
 .welcome p{
- color:#888894;
- margin:8px 0 0;
+    margin:8px 0 0;
+    color:#7f8b9d;
+    font-size:16px;
 }
 
 .profile{
- background:#15151d;
- border:1px solid #292933;
- border-radius:14px;
- padding:10px 15px;
- display:flex;
- align-items:center;
- gap:10px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:9px 15px;
+    border:1px solid #20324b;
+    background:#0b1019;
+    border-radius:16px;
 }
 
 .avatar{
- width:34px;
- height:34px;
- border-radius:50%;
- background:#8035ef;
- display:flex;
- align-items:center;
- justify-content:center;
+    width:40px;
+    height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:50%;
+    background:linear-gradient(135deg,#007dff,#8d2cff);
+    font-weight:bold;
 }
 
+/* ================= HERO ================= */
+
+.hero{
+    position:relative;
+    min-height:470px;
+    border:1px solid #19334e;
+    border-radius:25px;
+    overflow:hidden;
+    margin-bottom:22px;
+    background:
+        radial-gradient(circle at 50% 80%,rgba(0,130,255,.18),transparent 30%),
+        linear-gradient(135deg,#07101c,#03050a);
+}
+
+.hero-grid{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(rgba(0,170,255,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,170,255,.04) 1px,transparent 1px);
+    background-size:45px 45px;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    padding:55px 50px;
+}
+
+.hero-small{
+    letter-spacing:7px;
+    color:#64d4ff;
+    font-size:12px;
+}
+
+.hero h2{
+    margin:18px 0 0;
+    font-size:76px;
+    line-height:.9;
+    font-weight:950;
+    letter-spacing:-5px;
+    background:linear-gradient(90deg,#dcecff,#4bc8ff,#ffffff);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero-title{
+    color:#64d4ff;
+    letter-spacing:6px;
+    margin-top:18px;
+}
+
+.hero-text{
+    max-width:430px;
+    margin-top:25px;
+    color:#9baabd;
+    line-height:1.7;
+}
+
+.k-symbol{
+    position:absolute;
+    right:8%;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:380px;
+    font-weight:1000;
+    font-style:italic;
+    color:transparent;
+    -webkit-text-stroke:3px rgba(40,175,255,.45);
+    text-shadow:
+        0 0 30px rgba(0,150,255,.35),
+        20px 0 50px rgba(255,100,0,.18);
+}
+
+/* ================= STATS ================= */
+
 .stats{
- display:grid;
- grid-template-columns:repeat(4,1fr);
- gap:16px;
- margin-bottom:25px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+    margin-bottom:24px;
 }
 
 .stat{
- background:linear-gradient(145deg,#14141c,#0f0f15);
- border:1px solid #282832;
- border-radius:18px;
- padding:22px;
+    padding:22px;
+    border-radius:18px;
+    border:1px solid #19324c;
+    background:linear-gradient(145deg,#0a111b,#05080e);
+    transition:.25s;
 }
 
-.stat-icon{font-size:23px}
+.stat:hover{
+    transform:translateY(-3px);
+    border-color:#207dc2;
+    box-shadow:0 10px 35px rgba(0,130,255,.12);
+}
 
-.stat-label{
- color:#888894;
- margin-top:12px;
+.stat-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.stat-icon{
+    font-size:25px;
 }
 
 .stat-value{
- font-size:30px;
- font-weight:800;
- margin-top:5px;
+    font-size:30px;
+    font-weight:900;
+    margin-top:15px;
 }
 
+.stat-label{
+    color:#7f8b9d;
+    margin-top:5px;
+}
+
+/* ================= CREATE ================= */
+
 .create{
- background:linear-gradient(135deg,#17121f,#111117);
- border:1px solid #322246;
- border-radius:22px;
- padding:28px;
- margin-bottom:25px;
+    padding:27px;
+    border-radius:23px;
+    border:1px solid #1d3b5b;
+    background:
+        radial-gradient(circle at 100% 0,rgba(0,130,255,.08),transparent 30%),
+        #070c14;
+    margin-bottom:24px;
 }
 
 .create-head{
- display:flex;
- justify-content:space-between;
- align-items:center;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
 }
 
-.create h2{margin:0}
+.create h2{
+    margin:0;
+    font-size:25px;
+}
 
-.badge{
- background:#25183a;
- color:#b878ff;
- padding:7px 11px;
- border-radius:20px;
- font-size:12px;
+.create-sub{
+    color:#77879b;
+    margin-top:7px;
+}
+
+.mode-tabs{
+    display:flex;
+    gap:8px;
+}
+
+.mode-tabs button{
+    padding:11px 16px;
+    border-radius:11px;
+    border:1px solid #243b55;
+    background:#09111b;
+    color:#9eb0c5;
+    cursor:pointer;
+}
+
+.mode-tabs button.active,
+.mode-tabs button:hover{
+    background:#087cff;
+    color:white;
+    border-color:#39baff;
 }
 
 textarea{
- width:100%;
- height:140px;
- margin-top:20px;
- padding:18px;
- resize:none;
- outline:none;
- border-radius:14px;
- border:1px solid #30303b;
- background:#08080d;
- color:white;
- font-size:16px;
+    width:100%;
+    height:145px;
+    resize:none;
+    margin-top:22px;
+    padding:18px;
+    border-radius:15px;
+    border:1px solid #1e3c58;
+    background:#03070d;
+    color:white;
+    outline:none;
+    font-size:16px;
 }
 
-textarea:focus{border-color:#8b35ff}
+textarea:focus{
+    border-color:#1e9fff;
+    box-shadow:0 0 25px rgba(0,140,255,.1);
+}
 
 .controls{
- display:flex;
- gap:12px;
- margin-top:14px;
- flex-wrap:wrap;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px;
+    margin-top:17px;
+}
+
+.control label{
+    display:block;
+    color:#73839a;
+    font-size:13px;
+    margin-bottom:8px;
 }
 
 select{
- background:#17171f;
- color:#fff;
- border:1px solid #30303b;
- border-radius:10px;
- padding:12px 15px;
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid #1d3b57;
+    background:#080e17;
+    color:white;
+    font-size:14px;
+    outline:none;
 }
 
 .generate{
- margin-top:18px;
- width:100%;
- padding:16px;
- border:0;
- border-radius:13px;
- background:linear-gradient(90deg,#7130e8,#943cff);
- color:#fff;
- font-size:17px;
- font-weight:700;
- cursor:pointer;
+    width:100%;
+    margin-top:20px;
+    padding:17px;
+    border:1px solid #33c1ff;
+    border-radius:14px;
+    background:linear-gradient(90deg,#007bff,#392dff);
+    color:white;
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    box-shadow:0 0 30px rgba(0,110,255,.25);
+    transition:.25s;
 }
 
-.generate:hover{opacity:.9}
+.generate:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 40px rgba(0,150,255,.4);
+}
 
 .generate:disabled{
- opacity:.5;
- cursor:not-allowed;
+    opacity:.5;
+    cursor:not-allowed;
 }
 
+/* ================= STATUS ================= */
+
 .status{
- text-align:center;
- color:#aaa;
- margin-top:15px;
+    text-align:center;
+    color:#78bfff;
+    margin-top:14px;
+    min-height:22px;
 }
 
 .video{
- margin-top:20px;
- text-align:center;
+    margin-top:20px;
+    text-align:center;
 }
 
-video{
- width:100%;
- max-width:750px;
- border-radius:15px;
+.video video{
+    width:100%;
+    max-width:850px;
+    border-radius:15px;
+    border:1px solid #1e4668;
 }
+
+/* ================= SECTION ================= */
 
 .section{
- background:#111118;
- border:1px solid #282832;
- border-radius:20px;
- padding:25px;
- margin-bottom:20px;
+    padding:25px;
+    border-radius:22px;
+    border:1px solid #172f47;
+    background:#060b12;
+    margin-bottom:22px;
 }
 
 .section-title{
- display:flex;
- justify-content:space-between;
- align-items:center;
- margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
 }
 
-.section-title h2{margin:0}
+.section-title h2{
+    margin:0;
+}
 
-.muted{color:#888894}
+.view-all{
+    color:#45bdff;
+    cursor:pointer;
+}
+
+/* ================= PROJECTS ================= */
 
 .projects{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:15px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
 }
 
 .project{
- min-height:150px;
- background:#181820;
- border:1px solid #282832;
- border-radius:14px;
- padding:20px;
+    border:1px solid #1a3045;
+    background:#080d14;
+    border-radius:15px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:.25s;
 }
 
-.empty{
- color:#777;
- text-align:center;
- padding:35px;
+.project:hover{
+    transform:translateY(-4px);
+    border-color:#208dce;
 }
 
-.plans{
- display:grid;
- grid-template-columns:repeat(3,1fr);
- gap:18px;
+.project-image{
+    height:145px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+    background:
+        radial-gradient(circle at 30% 30%,#1469a8,transparent 25%),
+        linear-gradient(135deg,#111827,#03050a);
 }
 
-.plan{
- background:#15151d;
- border:1px solid #292933;
- border-radius:17px;
- padding:22px;
+.project-info{
+    padding:13px;
 }
 
-.plan.pro{
- border-color:#8538f3;
- box-shadow:0 0 25px rgba(130,50,240,.12);
+.project-name{
+    font-weight:700;
 }
 
-.plan h3{margin-top:0}
-
-.price{
- font-size:30px;
- font-weight:800;
+.project-time{
+    color:#68778a;
+    font-size:12px;
+    margin-top:5px;
 }
 
-.plan button{
- width:100%;
- padding:12px;
- margin-top:15px;
- border:0;
- border-radius:10px;
- background:#7932eb;
- color:white;
- font-weight:bold;
+/* ================= BANNER ================= */
+
+.banner{
+    min-height:170px;
+    border-radius:22px;
+    border:1px solid #21415d;
+    padding:35px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:
+        radial-gradient(circle at 20% 50%,rgba(0,150,255,.18),transparent 30%),
+        radial-gradient(circle at 80% 50%,rgba(255,110,20,.12),transparent 30%),
+        #050a11;
+    margin-bottom:22px;
 }
 
-.hidden{display:none}
-
-@media(max-width:850px){
-
-.sidebar{
- width:72px;
- padding:15px 8px;
+.banner h2{
+    letter-spacing:7px;
+    font-size:25px;
 }
 
-.logo{
- font-size:18px;
- padding:8px 5px;
+.banner p{
+    color:#718298;
 }
 
-.logo span{display:none}
-
-.nav button{
- font-size:0;
- text-align:center;
- padding:14px 5px;
+.upgrade{
+    padding:14px 25px;
+    border-radius:12px;
+    border:1px solid #38bfff;
+    background:#071525;
+    color:white;
+    cursor:pointer;
 }
 
-.nav button::first-letter{font-size:21px}
+/* ================= FOOTER ================= */
 
-.main{
- margin-left:72px;
- width:calc(100% - 72px);
- padding:18px;
+footer{
+    padding:25px 5px;
+    color:#566477;
+    display:flex;
+    justify-content:space-between;
 }
 
-.stats{
- grid-template-columns:repeat(2,1fr);
+/* ================= MOBILE ================= */
+
+@media(max-width:1000px){
+
+    .sidebar{
+        width:80px;
+        padding:20px 10px;
+    }
+
+    .logo{
+        font-size:16px;
+        text-align:center;
+        padding:10px 0 25px;
+    }
+
+    .nav button{
+        text-align:center;
+        padding:14px 5px;
+    }
+
+    .nav-text{
+        display:none;
+    }
+
+    .nav-icon{
+        width:auto;
+        font-size:21px;
+    }
+
+    .main{
+        margin-left:80px;
+        width:calc(100% - 80px);
+    }
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .projects{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    .hero h2{
+        font-size:55px;
+    }
+
+    .k-symbol{
+        font-size:250px;
+    }
 }
 
-.projects,.plans{
- grid-template-columns:1fr;
+@media(max-width:650px){
+
+    .main{
+        padding:14px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .welcome h1{
+        font-size:24px;
+    }
+
+    .profile{
+        padding:7px;
+    }
+
+    .profile-name{
+        display:none;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+        gap:9px;
+    }
+
+    .stat{
+        padding:15px;
+    }
+
+    .create-head{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .mode-tabs{
+        width:100%;
+        overflow:auto;
+    }
+
+    .mode-tabs button{
+        white-space:nowrap;
+    }
+
+    .projects{
+        grid-template-columns:1fr;
+    }
+
+    .banner{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+    footer{
+        flex-direction:column;
+        gap:10px;
+    }
+
 }
 
-.welcome h1{font-size:24px}
-}
-
-@media(max-width:500px){
-
-.stats{
- grid-template-columns:1fr;
-}
-
-.topbar{
- align-items:flex-start;
- gap:10px;
-}
-
-.profile{
- padding:8px;
-}
-
-}
 </style>
 </head>
 
 <body>
 
 <div class="app">
+
+<!-- ================= SIDEBAR ================= -->
 
 <aside class="sidebar">
 
@@ -366,128 +681,698 @@ KLYRO <span>AI</span>
 <div class="nav">
 
 <button class="active" onclick="page('home',this)">
-🏠 Dashboard
+<span class="nav-icon">🏠</span>
+<span class="nav-text">Dashboard</span>
 </button>
 
 <button onclick="page('create',this)">
-🎬 Create Video
+<span class="nav-icon">🎬</span>
+<span class="nav-text">Create Video</span>
 </button>
 
 <button onclick="page('projects',this)">
-📁 My Projects
+<span class="nav-icon">📁</span>
+<span class="nav-text">My Projects</span>
 </button>
 
 <button onclick="page('credits',this)">
-🪙 Credits
+<span class="nav-icon">🪙</span>
+<span class="nav-text">Credits</span>
 </button>
 
 <button onclick="page('billing',this)">
-💳 Billing
+<span class="nav-icon">💳</span>
+<span class="nav-text">Billing</span>
 </button>
 
 <button onclick="page('settings',this)">
-⚙️ Settings
+<span class="nav-icon">⚙️</span>
+<span class="nav-text">Settings</span>
 </button>
 
 </div>
+
 </aside>
 
 
-<main class="main">
+<!-- ================= MAIN ================= -->
+
+<main class="main" id="main">
+
+
+<!-- TOP -->
 
 <div class="topbar">
 
 <div class="welcome">
+
 <h1>Welcome back 👋</h1>
-<p>Create something amazing with KLYRO AI.</p>
+
+<p>
+Create something amazing with KLYRO AI.
+</p>
+
 </div>
 
 <div class="profile">
-<div class="avatar">👤</div>
-User
+
+<div class="avatar">A</div>
+
+<div class="profile-name">
+<strong>Adwaid</strong>
+<br>
+<small style="color:#738196">Creator</small>
 </div>
 
 </div>
 
+</div>
 
-<!-- DASHBOARD -->
 
-<section id="home">
+<!-- ================= HERO ================= -->
 
-<div class="stats">
+<section class="hero">
+
+<div class="hero-grid"></div>
+
+<div class="hero-content">
+
+<div class="hero-small">
+A MORE CAPABLE WORLD AWAITS
+</div>
+
+<h2>KLYRO AI</h2>
+
+<div class="hero-title">
+AI VIDEO CREATION FOR EVERYONE
+</div>
+
+<p class="hero-text">
+Turn your imagination into cinematic videos.
+Create stories, advertisements, reels, shorts and
+visual experiences with AI.
+</p>
+
+</div>
+
+<div class="k-symbol">
+K
+</div>
+
+</section>
+
+
+<!-- ================= STATS ================= -->
+
+<section class="stats">
 
 <div class="stat">
-<div class="stat-icon">🪙</div>
-<div class="stat-label">Available Credits</div>
-<div class="stat-value" id="credits">10</div>
+
+<div class="stat-top">
+<span class="stat-icon">⚡</span>
+<span>›</span>
 </div>
+
+<div class="stat-value" id="creditsValue">
+10
+</div>
+
+<div class="stat-label">
+Credits Left
+</div>
+
+</div>
+
 
 <div class="stat">
-<div class="stat-icon">🎬</div>
-<div class="stat-label">Videos Created</div>
-<div class="stat-value" id="videos">0</div>
+
+<div class="stat-top">
+<span class="stat-icon">▶️</span>
+<span>›</span>
 </div>
+
+<div class="stat-value" id="videosValue">
+0
+</div>
+
+<div class="stat-label">
+Videos Created
+</div>
+
+</div>
+
 
 <div class="stat">
-<div class="stat-icon">📁</div>
-<div class="stat-label">Projects</div>
-<div class="stat-value">0</div>
+
+<div class="stat-top">
+<span class="stat-icon">📁</span>
+<span>›</span>
 </div>
+
+<div class="stat-value" id="projectsValue">
+0
+</div>
+
+<div class="stat-label">
+Projects
+</div>
+
+</div>
+
 
 <div class="stat">
-<div class="stat-icon">⭐</div>
-<div class="stat-label">Current Plan</div>
-<div class="stat-value">Free</div>
+
+<div class="stat-top">
+<span class="stat-icon">👑</span>
+<span>★</span>
+</div>
+
+<div class="stat-value" style="font-size:22px">
+Free Plan
+</div>
+
+<div class="stat-label">
+Upgrade for more
 </div>
 
 </div>
 
+</section>
 
-<div class="create">
+
+<!-- ================= CREATE ================= -->
+
+<section class="create" id="createSection">
 
 <div class="create-head">
+
 <div>
-<h2>✨ Create with KLYRO AI</h2>
-<p class="muted">
-Turn your imagination into cinematic video.
-</p>
+
+<h2>✨ Create Your Video</h2>
+
+<div class="create-sub">
+Turn your ideas into stunning videos with AI
 </div>
 
-<div class="badge">AI VIDEO</div>
 </div>
+
+<div class="mode-tabs">
+
+<button class="active" onclick="setMode(this)">
+Text to Video
+</button>
+
+<button onclick="setMode(this)">
+Image to Video
+</button>
+
+<button onclick="setMode(this)">
+Templates
+</button>
+
+</div>
+
+</div>
+
 
 <textarea
 id="prompt"
-placeholder="Describe your video... Example: A cinematic drone shot of a beautiful Kerala village during sunset, golden sunlight, coconut trees moving in the wind..."
+maxlength="1000"
+placeholder="Describe your video... Example: A cinematic shot of a futuristic city at night..."
 ></textarea>
+
 
 <div class="controls">
 
-<select id="ratio">
-<option value="16:9">16:9 — Landscape</option>
-<option value="9:16">9:16 — Reels / Shorts</option>
-<option value="1:1">1:1 — Square</option>
-</select>
 
-<select>
-<option>480p</option>
+<div class="control">
+
+<label>
+Aspect Ratio
+</label>
+
+<select id="ratio">
+
+<option value="9:16">
+9:16 — Reels / Shorts
+</option>
+
+<option value="16:9">
+16:9 — Landscape
+</option>
+
+<option value="1:1">
+1:1 — Square
+</option>
+
 </select>
 
 </div>
 
-<button class="generate" id="generateBtn" onclick="generateVideo()">
+
+<div class="control">
+
+<label>
+Quality
+</label>
+
+<select id="quality">
+
+<option value="480p">
+480p — Standard
+</option>
+
+<option value="720p">
+720p — HD
+</option>
+
+<option value="1080p" selected>
+1080p — Full HD
+</option>
+
+<option value="1440p">
+2K — QHD
+</option>
+
+<option value="2160p">
+4K — Ultra HD
+</option>
+
+<option value="4320p">
+8K — Ultra
+</option>
+
+</select>
+
+</div>
+
+
+<div class="control">
+
+<label>
+Style
+</label>
+
+<select id="style">
+
+<option>Cinematic</option>
+<option>Realistic</option>
+<option>Anime</option>
+<option>3D</option>
+<option>Futuristic</option>
+<option>Product Advertisement</option>
+<option>Film</option>
+
+</select>
+
+</div>
+
+
+</div>
+
+
+<button
+class="generate"
+id="generateBtn"
+onclick="generateVideo()"
+>
 ✨ Generate Video
 </button>
+
 
 <div class="status" id="status"></div>
 
 <div class="video" id="videoContainer"></div>
 
+</section>
+
+
+<!-- ================= PROJECTS ================= -->
+
+<section class="section" id="projectsSection">
+
+<div class="section-title">
+
+<h2>📁 Recent Projects</h2>
+
+<span class="view-all">
+View All →
+</span>
+
 </div>
 
 
-<div class="section">
+<div class="projects">
 
-<div class="section-title">
-<h2>Recent Projects
- 
+
+<div class="project">
+
+<div class="project-image">
+🌃
+</div>
+
+<div class="project-info">
+
+<div class="project-name">
+Neon City
+</div>
+
+<div class="project-time">
+Just now
+</div>
+
+</div>
+
+</div>
+
+
+<div class="project">
+
+<div class="project-image">
+🏔️
+</div>
+
+<div class="project-info">
+
+<div class="project-name">
+Mountain Flow
+</div>
+
+<div class="project-time">
+2 hours ago
+</div>
+
+</div>
+
+</div>
+
+
+<div class="project">
+
+<div class="project-image">
+🌌
+</div>
+
+<div class="project-info">
+
+<div class="project-name">
+The Journey
+</div>
+
+<div class="project-time">
+5 hours ago
+</div>
+
+</div>
+
+</div>
+
+
+<div class="project">
+
+<div class="project-image">
+🏎️
+</div>
+
+<div class="project-info">
+
+<div class="project-name">
+Speed
+</div>
+
+<div class="project-time">
+1 day ago
+</div>
+
+</div>
+
+</div>
+
+
+</div>
+
+</section>
+
+
+<!-- ================= BANNER ================= -->
+
+<section class="banner">
+
+<div>
+
+<h2>IMAGINATION HAS NO LIMITS</h2>
+
+<p>
+More credits. More power. More possibilities.
+</p>
+
+</div>
+
+<button class="upgrade" onclick="page('billing')">
+Upgrade Now →
+</button>
+
+</section>
+
+
+<footer>
+
+<div>
+<strong>KLYRO <span style="color:#00bfff">AI</span></strong>
+&nbsp; © 2026 KLYRO AI
+</div>
+
+<div>
+Privacy &nbsp;&nbsp; Terms &nbsp;&nbsp; Support
+</div>
+
+</footer>
+
+
+</main>
+
+</div>
+
+
+<script>
+
+/* ================= NAVIGATION ================= */
+
+function page(name,btn){
+
+    document.querySelectorAll(".nav button")
+    .forEach(function(button){
+        button.classList.remove("active");
+    });
+
+    if(btn){
+        btn.classList.add("active");
+    }
+
+    if(name === "home"){
+        window.scrollTo({
+            top:0,
+            behavior:"smooth"
+        });
+    }
+
+    if(name === "create"){
+        document.getElementById("createSection")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+    }
+
+    if(name === "projects"){
+        document.getElementById("projectsSection")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+    }
+
+    if(name === "credits"){
+        alert(
+            "🪙 KLYRO AI Credits\n\nAvailable Credits: "
+            + document.getElementById("creditsValue").innerText
+        );
+    }
+
+    if(name === "billing"){
+        alert(
+            "💳 KLYRO AI Billing\n\nCurrent Plan: Free"
+        );
+    }
+
+    if(name === "settings"){
+        alert(
+            "⚙️ KLYRO AI Settings\n\nSettings panel coming soon."
+        );
+    }
+
+}
+
+
+/* ================= MODE ================= */
+
+function setMode(button){
+
+    document.querySelectorAll(".mode-tabs button")
+    .forEach(function(b){
+        b.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+}
+
+
+/* ================= GENERATE ================= */
+
+async function generateVideo(){
+
+    const prompt =
+        document.getElementById("prompt").value.trim();
+
+    const quality =
+        document.getElementById("quality").value;
+
+    const ratio =
+        document.getElementById("ratio").value;
+
+    const style =
+        document.getElementById("style").value;
+
+    const button =
+        document.getElementById("generateBtn");
+
+    const status =
+        document.getElementById("status");
+
+    const videoContainer =
+        document.getElementById("videoContainer");
+
+
+    if(!prompt){
+
+        status.innerText =
+            "⚠️ Please describe your video first.";
+
+        return;
+
+    }
+
+
+    button.disabled = true;
+
+    button.innerText =
+        "⏳ Creating your video...";
+
+    status.innerText =
+        "KLYRO AI is generating your video in "
+        + quality + "...";
+
+    videoContainer.innerHTML = "";
+
+
+    try{
+
+        const response =
+            await fetch("/generate",{
+
+                method:"POST",
+
+                headers:{
+                    "Content-Type":"application/json"
+                },
+
+                body:JSON.stringify({
+
+                    prompt:prompt,
+                    quality:quality,
+                    ratio:ratio,
+                    style:style
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if(data.videoUrl){
+
+            videoContainer.innerHTML = `
+
+                <video
+                    controls
+                    autoplay
+                    src="${data.videoUrl}">
+                </video>
+
+            `;
+
+            status.innerText =
+                "✅ Video created successfully!";
+
+            let count =
+                Number(
+                    document.getElementById(
+                        "videosValue"
+                    ).innerText
+                );
+
+            document.getElementById(
+                "videosValue"
+            ).innerText = count + 1;
+
+
+        }else{
+
+            status.innerText =
+                data.message ||
+                "⚠️ Video generation failed.";
+
+        }
+
+
+    }catch(error){
+
+        console.error(error);
+
+        status.innerText =
+            "⚠️ Server connection error.";
+
+    }
+
+
+    button.disabled = false;
+
+    button.innerText =
+        "✨ Generate Video";
+
+}
+
+
+/* ================= CHARACTER COUNTER ================= */
+
+document
+.getElementById("prompt")
+.addEventListener("input",function(){
+
+    const max = 1000;
+
+    if(this.value.length >= max){
+
+        this.style.borderColor =
+            "#ff9d32";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
