@@ -461,3 +461,536 @@ KLYRO User
 <div class="card">
 <small>Current Plan</small>
 <h2>Free</h2
+</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CREATE VIDEO -->
+
+<section id="create" class="page">
+
+<div class="create-box">
+
+<h2>🎬 Create New Video</h2>
+
+<textarea id="createPrompt"
+placeholder="Describe the video you want KLYRO AI to create..."></textarea>
+
+<div class="options">
+
+<select>
+<option>16:9 Landscape</option>
+<option>9:16 Portrait</option>
+<option>1:1 Square</option>
+</select>
+
+<select>
+<option>480p</option>
+<option>720p</option>
+</select>
+
+<select>
+<option>Cinematic</option>
+<option>Realistic</option>
+<option>Anime</option>
+</select>
+
+</div>
+
+<button class="generate" onclick="generateFromCreate()">
+🚀 Generate Video
+</button>
+
+<div class="progress-box" id="progressBox">
+
+<div class="progress-text" id="progressText">
+Preparing KLYRO AI...
+</div>
+
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+
+</div>
+
+<div class="video-result" id="videoResult">
+
+<video id="resultVideo" controls></video>
+
+<div class="video-actions">
+
+<button class="action-btn download"
+onclick="downloadCurrent()">
+⬇️ Download
+</button>
+
+<button class="action-btn"
+onclick="saveProject()">
+📁 Save Project
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PROJECTS -->
+
+<section id="projects" class="page">
+
+<div id="projectList"></div>
+
+</section>
+
+
+<!-- CREDITS -->
+
+<section id="credits" class="page">
+
+<div class="card credit-box">
+
+<h2>💳 Your KLYRO Credits</h2>
+
+<div class="credit-number" id="creditBig">10</div>
+
+<p>Your credits for AI video generation.</p>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<script>
+
+let credits =
+Number(localStorage.getItem("klyroCredits")) || 10;
+
+let videosCreated =
+Number(localStorage.getItem("klyroVideos")) || 0;
+
+let projects =
+JSON.parse(localStorage.getItem("klyroProjects") || "[]");
+
+let currentVideo = null;
+let currentPrompt = "";
+
+
+/* PAGE NAVIGATION */
+
+function showPage(page,button){
+
+document.querySelectorAll(".page")
+.forEach(p => p.classList.remove("active"));
+
+let selected=document.getElementById(page);
+
+if(selected){
+selected.classList.add("active");
+}
+
+document.querySelectorAll(".nav button")
+.forEach(b => b.classList.remove("active"));
+
+if(button){
+button.classList.add("active");
+}
+
+let titles={
+dashboard:"Dashboard",
+create:"Create Video",
+projects:"My Projects",
+credits:"Credits"
+};
+
+document.getElementById("pageTitle").innerText =
+titles[page] || "KLYRO AI";
+
+if(page==="projects"){
+renderProjects();
+}
+
+updateStats();
+
+}
+
+
+/* STATS */
+
+function updateStats(){
+
+document.getElementById("creditStat").innerText=credits;
+
+document.getElementById("videoStat").innerText=videosCreated;
+
+document.getElementById("projectStat").innerText=projects.length;
+
+document.getElementById("creditBig").innerText=credits;
+
+localStorage.setItem("klyroCredits",credits);
+
+localStorage.setItem("klyroVideos",videosCreated);
+
+}
+
+
+/* GENERATE FROM CREATE PAGE */
+
+async function generateFromCreate(){
+
+let prompt =
+document.getElementById("createPrompt").value.trim();
+
+if(!prompt){
+
+alert("Please enter a prompt.");
+
+return;
+}
+
+await startGeneration(prompt);
+
+}
+
+
+/* GENERATION */
+
+async function startGeneration(prompt){
+
+if(credits<=0){
+
+alert("No credits available.");
+
+return;
+
+}
+
+currentPrompt=prompt;
+
+let box=document.getElementById("progressBox");
+
+let text=document.getElementById("progressText");
+
+let fill=document.getElementById("progressFill");
+
+let result=document.getElementById("videoResult");
+
+box.style.display="block";
+
+result.style.display="none";
+
+fill.style.width="10%";
+
+text.innerText="Sending request to KLYRO AI...";
+
+try{
+
+let response=await fetch("/generate",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+prompt:prompt
+})
+
+});
+
+let data=await response.json();
+
+if(!response.ok){
+
+throw new Error(data.error || "Generation failed");
+
+}
+
+fill.style.width="30%";
+
+text.innerText=
+"KLYRO AI is creating your video... ⏳";
+
+let id=data.id;
+
+while(true){
+
+await new Promise(
+resolve=>setTimeout(resolve,3000)
+);
+
+let statusResponse=
+await fetch("/status?id="+encodeURIComponent(id));
+
+let statusData=
+await statusResponse.json();
+
+if(statusData.status==="succeeded"){
+
+fill.style.width="100%";
+
+text.innerText=
+"Video created successfully! 🎉";
+
+currentVideo=statusData.output;
+
+videosCreated++;
+
+credits--;
+
+updateStats();
+
+showVideo(currentVideo);
+
+break;
+
+}
+
+if(
+statusData.status==="failed" ||
+statusData.status==="canceled"
+){
+
+throw new Error(
+statusData.error || "Video generation failed"
+);
+
+}
+
+fill.style.width="60%";
+
+text.innerText=
+"Generating video... Please wait ⏳";
+
+}
+
+}catch(error){
+
+fill.style.width="0%";
+
+text.innerText="Generation failed ❌";
+
+alert(error.message);
+
+}
+
+}
+
+
+/* SHOW VIDEO */
+
+function showVideo(url){
+
+let video=document.getElementById("resultVideo");
+
+video.src=url;
+
+document.getElementById("videoResult")
+.style.display="block";
+
+}
+
+
+/* DOWNLOAD */
+
+function downloadCurrent(){
+
+if(!currentVideo){
+
+alert("No video available.");
+
+return;
+
+}
+
+window.open(currentVideo,"_blank");
+
+}
+
+
+/* SAVE PROJECT */
+
+function saveProject(){
+
+if(!currentVideo){
+
+alert("Generate a video first.");
+
+return;
+
+}
+
+let project={
+
+id:Date.now(),
+
+name:
+currentPrompt.substring(0,45) ||
+"KLYRO AI Video",
+
+prompt:currentPrompt,
+
+video:currentVideo,
+
+date:new Date().toLocaleString()
+
+};
+
+projects.unshift(project);
+
+localStorage.setItem(
+"klyroProjects",
+JSON.stringify(projects)
+);
+
+updateStats();
+
+alert("Project saved successfully! 📁");
+
+}
+
+
+/* PROJECTS */
+
+function renderProjects(){
+
+let container=
+document.getElementById("projectList");
+
+if(projects.length===0){
+
+container.innerHTML=`
+<div class="empty">
+
+<h2>No Projects Yet</h2>
+
+<p style="margin-top:10px">
+Your generated videos will appear here.
+</p>
+
+</div>
+`;
+
+return;
+
+}
+
+container.innerHTML=`
+
+<div class="projects">
+
+${projects.map(p=>`
+
+<div class="project">
+
+<video
+src="${p.video}"
+controls>
+</video>
+
+<div class="project-info">
+
+<h3>${escapeHTML(p.name)}</h3>
+
+<small>${p.date}</small>
+
+<div class="project-buttons">
+
+<button
+onclick="window.open('${p.video}','_blank')">
+▶️ Open
+</button>
+
+<button
+class="download"
+onclick="downloadProject('${p.video}')">
+⬇️
+</button>
+
+<button
+onclick="deleteProject(${p.id})">
+🗑️
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`).join("")}
+
+</div>
+`;
+
+}
+
+
+/* DOWNLOAD PROJECT */
+
+function downloadProject(url){
+
+window.open(url,"_blank");
+
+}
+
+
+/* DELETE */
+
+function deleteProject(id){
+
+if(!confirm("Delete this project?")){
+
+return;
+
+}
+
+projects=
+projects.filter(p=>p.id!==id);
+
+localStorage.setItem(
+"klyroProjects",
+JSON.stringify(projects)
+);
+
+renderProjects();
+
+updateStats();
+
+}
+
+
+/* HTML SAFETY */
+
+function escapeHTML(text){
+
+return text
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+/* START */
+
+updateStats();
+
+</script>
+
+</body>
+</html>
