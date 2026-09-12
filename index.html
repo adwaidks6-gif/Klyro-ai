@@ -491,29 +491,107 @@ font-family:Arial,sans-serif;
   </div>
 </div>
 
-<script>
-function klyroLogin(){
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+let supabaseClient = null;
+
+async async function initSupabase(){
+  try{
+    const response = await fetch("/config");
+    const config = await response.json();
+
+    supabaseClient = window.supabase.createClient(
+      config.supabaseUrl,
+      config.supabasePublishableKey
+    );
+
+    const { data } = await supabaseClient.auth.getSession();
+
+    document.getElementById("loginScreen").style.display =
+      data.session ? "none" : "flex";
+
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      document.getElementById("loginScreen").style.display =
+        session ? "none" : "flex";
+    });
+
+  }catch(error){
+    console.error("Supabase error:", error);
+  }
+}
+
+async function klyroLogin(){
   const email =
-  document.getElementById("loginEmail").value.trim();
+    document.getElementById("loginEmail").value.trim();
 
   const password =
-  document.getElementById("loginPassword").value.trim();
+    document.getElementById("loginPassword").value;
 
   if(!email || !password){
     alert("Please enter email and password.");
     return;
   }
 
-  localStorage.setItem("klyroLoggedIn","true");
+  if(!supabaseClient){
+    alert("KLYRO AI is still loading. Please try again.");
+    return;
+  }
 
-  document.getElementById("loginScreen").style.display="none";
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("✅ Login successful!");
 }
 
-function klyroSignup(){
+async function klyroSignup(){
+  const email =
+    document.getElementById("loginEmail").value.trim();
 
-  alert("KLYRO AI Signup is coming soon 🚀");
+  const password =
+    document.getElementById("loginPassword").value;
+
+  if(!email || !password){
+    alert("Enter email and password to create your account.");
+    return;
+  }
+
+  if(password.length < 6){
+    alert("Password must be at least 6 characters.");
+    return;
+  }
+
+  if(!supabaseClient){
+    alert("KLYRO AI is still loading. Please try again.");
+    return;
+  }
+
+  const { error } =
+    await supabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        emailRedirectTo: window.location.origin
+      }
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("✅ Account created! Check your email to verify your account.");
 }
+
+initSupabase();
 </script>
 <div class="app">
 
