@@ -496,7 +496,7 @@ font-family:Arial,sans-serif;
 <script>
 let supabaseClient = null;
 
-asyncasync function initSupabase(){
+async function initSupabase(){
   try{
     const response = await fetch("/config");
     const config = await response.json();
