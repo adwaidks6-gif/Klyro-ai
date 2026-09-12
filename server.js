@@ -4,7 +4,8 @@ const path = require("path");
 
 const PORT = process.env.PORT || 3000;
 const TOKEN = process.env.REPLICATE_API_TOKEN;
-
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_PUBLISHABLE_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
 const server = http.createServer(async (req, res) => {
 
   const url = new URL(
